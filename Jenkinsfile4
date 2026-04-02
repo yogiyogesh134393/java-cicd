@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'us-east-1'
-        ECR_REPO   = '218137097139.dkr.ecr.us-east-1.amazonaws.com/java-frontend-app'
+        AWS_REGION = 'ap-south-1'
+        ECR_REPO   = '995597568446.dkr.ecr.ap-south-1.amazonaws.com/javafront'
     }
 
     tools {
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-                git branch: 'main', url: 'https://github.com/vtricksshiva/java-cicd.git'
+                git branch: 'main', url: 'https://github.com/yogiyogesh134393/java-cicd.git'
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'nexus_server', passwordVariable: 'pass', usernameVariable: 'user')]) {
                         sh """
                         curl -u ${user}:${pass} -T java-frontend-app.war \
-                        "http://98.89.42.69:8081/repository/java-app/java-frontend-app-${BUILD_NUMBER}.war"
+                        "http://43.204.142.109:8081/repository/nexus/java-frontend-app-${BUILD_NUMBER}.war"
                         """
                     }
                 }
