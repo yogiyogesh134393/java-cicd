@@ -21,7 +21,8 @@ pipeline {
         stage('Sonar Scan') {
             steps {
                 script {
-                    withSonarQubeEnv('sonarqube') {
+                    withSonarQubeEnv('sonarqube')
+                    withCredentials([usernamePassword(credentialsId: 'sonar', passwordVariable: 'pass', usernameVariable: 'user')]) {
                         sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sonar-scan-with-jenkins -Dsonar.projectName='sonar-scan-with-jenkins'"
                     }
                 }
@@ -38,10 +39,10 @@ pipeline {
         stage('Push Binaries to Nexus') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'nexus_server', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    withCredentials([usernamePassword(credentialsId: 'nexus_id', passwordVariable: 'pass', usernameVariable: 'user')]) {
                         sh """
                         curl -u ${user}:${pass} -T java-frontend-app.war \
-                        "http://43.204.142.109:8081/repository/nexus/java-frontend-app-${BUILD_NUMBER}.war"
+                        "http://43.204.142.109:8081/repository/sonar/java-frontend-app-${BUILD_NUMBER}.war"
                         """
                     }
                 }
